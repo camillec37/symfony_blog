@@ -32,11 +32,17 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/edition")
+     * L'id est optionnel car il a une valeur par défaut
+     * Si on ne passe pas d'id on est en création sinon en modification
+     * @Route("/edition/{id}", defaults={"id":null}, requirements={"id": "\d+"})
      */
-    public function edit(Request $request, EntityManagerInterface $manager)
+    public function edit(Request $request, EntityManagerInterface $manager, CategoryRepository $repository, $id)
     {
-        $category = new Category();
+        if (is_null($id)) { //creation
+            $category = new Category();
+        } else { //modification
+            $category = $repository->find($id);
+        }
 
         //création du formulaire relié à la catégorie
         $form = $this->createForm(CategoryType::class, $category);
@@ -62,6 +68,8 @@ class CategoryController extends AbstractController
                 $this->addFlash('success', 'La catégorie est bien enregistrée');
 
                 return $this->redirectToRoute('app_admin_category_index');
+            } else {
+                $this->addFlash('error', 'Le formulaire contient des erreurs');
             }
         }
 
@@ -70,5 +78,24 @@ class CategoryController extends AbstractController
             //pour passer le formulaire au template
             'form' => $form->createView()
         ]);
+    }
+
+
+    /**
+     * Paramconverter : le paramètre typé catégory contient un objet Category
+     * récupéré automatiquement par un find() sur l'id contenu dans l'URL
+     *
+     * @Route("/suppression/{id}", requirements={"id": "\d+"})
+     */
+    public function delete(EntityManagerInterface $manager, Category $category)
+    {
+        //suppression en bdd
+        $manager->remove($category);
+        $manager->flush();
+
+        $this->addFlash('success', 'La catégorie est bien supprimée' );
+
+        return $this->redirectToRoute('app_admin_category_index');
+
     }
 }
