@@ -1,8 +1,14 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Liste des articles{% endblock %}
 
 {% block body %}
-
     <h1>Accueil</h1>
+    <h2>Les derniers articles</h2>
+
+    {# On inclus le tableau depuis un autre fichier car il est le
+     meme sur Catégorie #}
+    {% include 'article/_list.html.twig' %}
+
 
 {% endblock %}

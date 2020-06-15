@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail d'article{% endblock %}
+
+{% block body %}
+
+    <h1>{{ article.title }}</h1>
+    <h3 class="text-muted">Le {{ article.publicationDate|date('d/m/Y H:i') }}</h3>
+    <h3>Par : {{ article.author }}</h3>
+    <h3>Catégorie : {{ article.category.name }}</h3>
+    {% if article.image is not null  %}
+        <img src="{{ asset('images/' ~ article.image) }}">
+    {% endif %}
+    <h4>{{ article.content }}</h4>
+
+    <h2>Commentaires</h2>
+
+    {% if app.user is null %}
+            <a href="{{ path('app_user_login') }}" class="btn btn-dark">
+                Connectez-vous pour laisser un commentaire
+            </a>
+    {% else %}
+
+        {{ form_start(form) }}
+
+        {{ form_row(form.content) }}
+
+        <div class="text-right">
+            <button type="submit" class="btn btn-outline-primary">
+                Enregistrer
+            </button>
+        </div>
+
+        {{ form_end(form) }}
+
+        <h2></h2>
+
+    {% endif %}
+
+
+
+   {# {% for comment in comments %}
+        <div class="card bg-light mb-3 p-2">
+        <p>{{ comment.content|nl2br }}</p>
+         <h6 class="text-primary">Par {{ comment.user }} le {{ comment.publicationDate|date('d/m/Y H:i') }}</h6>
+        </div>
+    {% endfor %}#}
+
+    {# OU
+    avec le LAZY LOADING : les commentaires sont requêtés en bdd
+    des qu'on utilise l'appel  à la methodes getComments() de l'article
+    et dans ce cas pas besoin de repository ! automatique
+    On peut ajouter le order by directement dans les commentaire de l'attrbut comments#}
+
+    {% for comment in article.comments  %}
+    <div class="card bg-light mb-3 p-2">
+        <p>{{ comment.content }}</p>
+        <h6 class="text-primary">Par {{ comment.user }} le {{ comment.publicationDate|date('d/m/Y H:i') }}</h6>
+    </div>
+    {% endfor %}
+
+
+
+
+
+{% endblock %}

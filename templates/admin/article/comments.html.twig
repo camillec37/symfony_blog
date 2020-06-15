@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Liste des commentaires de l'article "{{ article.title }}"</h1>
+
+    <a class="btn btn-outline-primary mb-3"
+       href="{{ path('app_admin_article_index') }}">
+        Retour aux articles
+    </a>
+
+    <table class="table table-striped">
+        <tr class="table-dark">
+            <th>Utilisateur</th>
+            <th>Date de publication</th>
+            <th>Contenu</th>
+            <th width="250px"></th>
+        </tr>
+        {% for comment in article.comments %}
+            <tr>
+                <td>{{ comment.user }}</td>
+                <td>{{ comment.publicationDate|date('d/m/Y H:i') }}</td>
+                <td>{{ comment.content|nl2br }}</td>
+                <td>
+                    <a href="{{ path('app_admin_article_deletecomments', {'id': comment.id}) }}" class="btn btn-danger">
+                        Supprimer
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td class="text-center" colspan="4">
+                    Aucun commentaire pour cet article
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+
+
+
+{% endblock %}

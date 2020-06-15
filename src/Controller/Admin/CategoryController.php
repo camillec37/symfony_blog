@@ -89,11 +89,20 @@ class CategoryController extends AbstractController
      */
     public function delete(EntityManagerInterface $manager, Category $category)
     {
+
+        // Si la catégorie ne contient aucun article
+        if($category->getArticles()->isEmpty()){
+
         //suppression en bdd
         $manager->remove($category);
         $manager->flush();
 
         $this->addFlash('success', 'La catégorie est bien supprimée' );
+
+        } else {
+            $this->addFlash('warning', "La catégorie n'est pas vide");
+        }
+
 
         return $this->redirectToRoute('app_admin_category_index');
 
